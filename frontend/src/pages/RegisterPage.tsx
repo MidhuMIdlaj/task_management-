@@ -17,7 +17,7 @@ export default function RegisterPage() {
     setSubmitting(true);
     try {
       await register(name, email, password);
-      navigate("/");
+      navigate("/", { replace: true });
     } catch (err: any) {
       setError(err?.response?.data?.message || "Registration failed");
     } finally {

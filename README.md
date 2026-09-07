@@ -104,7 +104,36 @@ npm run build
 npm start                  # runs compiled dist/server.js
 ```
 
-### 4.2 Frontend
+### 4.2 Render deployment
+
+This repository contains separate Dockerfiles for the backend and frontend. Do not create a
+single Render Docker service from the repository root, because there is no root-level
+`Dockerfile`.
+
+Create two Render **Web Services** from the same repository:
+
+**Backend service**
+
+- Runtime: `Docker`
+- Root Directory: `backend`
+- Dockerfile Path: `Dockerfile`
+- Health Check Path: `/api/health`
+- Environment variables: `MONGO_URI` (MongoDB Atlas connection string), `JWT_SECRET`,
+  `JWT_EXPIRES_IN=7d`, and `CLIENT_URL` (the deployed frontend URL)
+
+**Frontend service**
+
+- Runtime: `Docker`
+- Root Directory: `frontend`
+- Dockerfile Path: `Dockerfile`
+- Environment variables: `VITE_API_URL=https://<backend-service>.onrender.com/api` and
+  `VITE_SOCKET_URL=https://<backend-service>.onrender.com`
+
+Set the backend service's `CLIENT_URL` to the frontend URL, then redeploy the frontend after
+setting its `VITE_*` variables. Render provides the `PORT` variable automatically; the Dockerfiles
+already use ports `5000` and `4173` for the two services.
+
+### 4.3 Frontend
 
 ```bash
 cd frontend
